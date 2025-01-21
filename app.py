@@ -1,13 +1,14 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 import os
 from pathlib import Path
-
+from conn import temp_db as db
 app = FastAPI()
 UPLOAD_DIR = Path("uploaded_images")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True) 
 
-
+app.mount("/static", StaticFiles(directory=UPLOAD_DIR), name="static")
 
 @app.post("/upload/")
 async def upload_image(file: UploadFile = File(...)):
@@ -26,7 +27,8 @@ async def upload_image(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         content = await file.read()  # Read the file content
         f.write(content)  # Write it to the local file system
-
+    
+    db.add_data("user", filename)
     return {"filename": filename, "path": str(file_path)}
 
 # HTML form to upload files
