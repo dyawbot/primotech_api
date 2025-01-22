@@ -12,11 +12,11 @@ app.mount("/static", StaticFiles(directory=UPLOAD_DIR), name="static")
 
 @app.post("/upload/")
 async def upload_image(file: UploadFile = File(...)):
-    # Check the file's extension
+   
     filename = file.filename
     file_extension = filename.split(".")[-1].lower()
 
-    # Acceptable file extensions
+    
     allowed_extensions = ["png", "jpeg", "jpg"]
 
     if file_extension not in allowed_extensions:
@@ -25,11 +25,17 @@ async def upload_image(file: UploadFile = File(...)):
     # Save the uploaded file
     file_path = UPLOAD_DIR / filename
     with open(file_path, "wb") as f:
-        content = await file.read()  # Read the file content
-        f.write(content)  # Write it to the local file system
+        content = await file.read()  
+        f.write(content)  
     
     db.add_data("user", filename)
     return {"filename": filename, "path": str(file_path)}
+
+
+
+@app.get("/images")
+async def get_images_by_id():
+    print("get the images strings on db using id")
 
 # HTML form to upload files
 @app.get("/", response_class=HTMLResponse)
