@@ -16,14 +16,36 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
    ```sh
    git clone https://github.com/dyawbot/primotech_api.git
 
-IF DATABASE OR COLUMN CHANGED TO RUN THE MIGRATIONS
-BY RUNNING THE MIGRATION YOU SHOULD RUN IT IN TERMINAL
+## Run the Project
+- **This command run in the machine or local only**
+    ```sh
+    uvicorn app.main:app --host localhost --port 8080
 
-> alembic revision --autogenerate -m "name of commit"
 
-NOTE:
-    YOU SHOULD MODIFY THE method upgrade... (IT DELETES OR DROP THE COLUMN!!!!!!!!!!!)
-    THEN RUN THIS CODE
 
->alembic upgrade head
+# Modified Table or Column 
+- if you modified the models you need to migrate it using alembic
+- *NOTE: these are only the basic command for alembic*
 
+1. **AutoGenerate Function**
+- autogenerate, generates code in the folder alembic/versions/.py
+- it create two methods, **upgrade** and **downgrade**
+- *NOTE: check the method for upgrade for it deletes or drop data on table and row*
+    ```sh
+    alembic revision --autogenerate -m "name of commit"
+
+2. **Manual Function**
+- manual function also generates code in the folder alembic/versions/.py
+- the difference between the autogenerate is that you manually code the **upgrade** and **downgrade** function
+    ```sh
+    alembic revision -m "name of commit"
+
+3. **Update the table**
+- there are 2 ways to update the tables **upgrade** and **downgrade**
+- **UPDATE**
+    ```sh
+    alembic upgrade head
+
+- **DOWNGRADE**
+    ```SH
+    alembic downgrade head
