@@ -42,3 +42,8 @@ htmlcov/
 .coverage
 .cache/
 
+#ignore images
+*.png
+*.jpg
+*.jpeg
+
