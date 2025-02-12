@@ -1,0 +1,44 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environments
+venv/
+.env/
+.envrc
+.venv/
+Pipfile
+Pipfile.lock
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and databases
+*.log
+*.sqlite3
+*.db
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore environment variables and secrets
+.env
+*.pem
+secrets.json
+
+# Ignore compiled/mypy cache
+.mypy_cache/
+.pytest_cache/
+
+# Ignore Uvicorn logs
+*.pid
+*.sock
+*.log
+
+# Ignore coverage reports
+htmlcov/
+.coverage
+.cache/
+

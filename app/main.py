@@ -5,10 +5,21 @@ from app.db.session import engine, Base
 from app.api.v1.router import api_router
 from app.core.config import settings, UPLOAD_DIR
 
-import model.users as users
+# import model.users as users
 
 
 # users.Base.metadata.create_all(bind=engine)
+# from app.core.config import settings
+print(" ")
+print(" ")
+print(" ")
+print(" ")
+print(f"Database URL: {settings.DATABASE_URL}")
+print(f"Secret Key: {settings.SECRET_KEY}")
+print(" ")
+print(" ")
+print(" ")
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -16,15 +27,16 @@ app = FastAPI(
 )
 
 origin=[
-    "http://192.168.1.4:8080",
-    "http://192.168.1.6:5050"
-    "http://192.168.3.96:8080"
-    "http://192.168.73.96:8080"
+    "http://192.168.1.3:8080",
+    "http://192.168.1.6:5050",
+    "http://192.168.3.96:8080",
+    "http://192.168.73.96:8080",
+    "http://192.168.168.96:8080"
 ]
 
 
 
-app.mount("/static", StaticFiles(directory=UPLOAD_DIR), name="static")
+# app.mount("/static", StaticFiles(directory=UPLOAD_DIR), name="static")  
 
 
 
@@ -53,3 +65,6 @@ async def shutdown_db():
     await engine.dispose()
 
 app.include_router(api_router)
+
+
+

@@ -14,4 +14,4 @@ class StatusHelper(BaseModel):
 class UserImageHelper(BaseModel):
     username: str
     image_name: str
-    image_path: str
+    image_url: str

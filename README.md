@@ -16,7 +16,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
    ```sh
    git clone https://github.com/dyawbot/primotech_api.git
 
-## Run the Project
+## 🚀 Run the Project
 - **This command run in the machine or local only**
     ```sh
     uvicorn app.main:app --host localhost --port 8080
@@ -49,3 +49,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
 - **DOWNGRADE**
     ```SH
     alembic downgrade head
+
+
+## 📜 License
+- This project is licensed under the MIT License. See LICENSE for details.

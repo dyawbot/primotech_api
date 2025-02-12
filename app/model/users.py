@@ -11,7 +11,7 @@ class Users(Base):
 
     id = Column(Integer, primary_key=True)
     userId = Column(String, unique= True)
-    username = Column(String)
+    username = Column(String, unique = True)
     image_url_key = relationship("Images", back_populates="users_key")
 
 
@@ -20,7 +20,7 @@ class Images(Base):
     __tablename__ = 'tbl_images'
     id = Column(Integer, primary_key=True)
     image_name = Column(String, nullable=True)
-    image_page = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
     # Foreign key column in Images that references Users
     user_id = Column(Integer, ForeignKey('tbl_users.id'), nullable=False)
 
