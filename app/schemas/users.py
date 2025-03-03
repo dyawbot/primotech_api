@@ -29,9 +29,28 @@ class ImagesUsersSchema(BaseModel):
     
 
 
-class RequestUser(BaseModel):
-    parameter: UserSchema= Field(...)
+# class RequestUser(BaseModel):
+#     parameter: UserSchema= Field(...)
 
+class RequestUser:
+    def __init__(self, username: str = Form(...), 
+                 password: str = Form(...),
+                 first_name: Optional[str] = Form(None),
+                 last_name: Optional[str] =Form(None),
+                 phone_number: Optional[str] = Form(None)):
+        
+        self.username = username
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone_number = phone_number 
+        self.password = password
+        
+
+
+class RequestLoginUser:
+    def __init__(self, username: str = Form(...), password: str = Form(...)):
+        self.username = username
+        self.password = password
 
 # class RequestImage(BaseModel):
 #     parameter: ImagesUsersSchema = Form(...)

@@ -12,6 +12,10 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     userId = Column(String, unique= True)
     username = Column(String, unique = True)
+    first_name =Column(String, nullable=True)
+    last_name =Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
+    password = Column(String, nullable=False)
     image_url_key = relationship("Images", back_populates="users_key")
 
 

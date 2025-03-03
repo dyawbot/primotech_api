@@ -35,9 +35,9 @@ async def get_image_by_id(id: str, filename: str):
     print(file_path)
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Image not found")
-    return FileResponse(file_path)
+    return FileResponse(file_path)  
 
-@image_router.get('/{id}')
+@image_router.get('/by-images')
 async def get_all_image_by_id(id:str, db: AsyncSession = Depends(session.get_db)):
     result = await images.get_image_by_id_repo(db=db, username=id)
 
@@ -76,6 +76,5 @@ async def upload_images(username: Annotated[str, Form()], file: UploadFile = Fil
         raise HTTPException(status_code=response.code, detail=response.message)
     else:
         return Response(code=response.code,status=response.status, message=response.message, result=response.result).dict(exclude_none=True)
-    
     
     
