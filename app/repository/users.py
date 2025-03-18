@@ -9,6 +9,7 @@ from sqlalchemy.future import select
 from app.utils import hash_password as hash
 from fastapi import status
 
+import re
 
 
 
@@ -102,10 +103,17 @@ async def create_user(db: Session, user: RequestUser):
         return StatusHelper(code=status.HTTP_201_CREATED, status="OK", message="User created successfully", result=_user)
     except IntegrityError as e:
         await db.rollback()
-        error_message = str(e.orig).split("DETAIL:")[1].strip()
-        error_message = error_message.replace('"', '').replace('(', '').replace(')', '')
+
+        error_message = str(e.orig)
+        match = re.search(r"Key \(\w+\)=\((.*?)\) already exists", error_message)
+
+        if match:
+            error_message = f"{match.group(1)} already exists."
+        else:
+            error_message = "An unknown error occurred."
         await db.execute(text("SELECT setval(pg_get_serial_sequence('tbl_users', 'id'), max(id)) FROM tbl_users"))
         await db.commit()
+    
         return StatusHelper(code=400, status="Error", message= str(error_message))
 
     except Exception as e:
