@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, func
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 
@@ -17,6 +17,9 @@ class Users(Base):
     phone_number = Column(String, nullable=True)
     password = Column(String, nullable=False)
     image_url_key = relationship("Images", back_populates="users_key")
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    
 
 
 
@@ -27,7 +30,8 @@ class Images(Base):
     image_url = Column(String, nullable=True)
     # Foreign key column in Images that references Users
     user_id = Column(Integer, ForeignKey('tbl_users.id'), nullable=False)
-
     users_key = relationship("Users", back_populates="image_url_key")
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
     

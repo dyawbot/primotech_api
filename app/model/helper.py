@@ -7,6 +7,7 @@ class StatusHelper(BaseModel):
     code: int
     status: str
     message: str
+    token: Optional[str] = None
     result: Optional[Any] = None
 
 

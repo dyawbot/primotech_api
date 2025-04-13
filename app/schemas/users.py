@@ -48,9 +48,10 @@ class RequestUser:
 
 
 class RequestLoginUser:
-    def __init__(self, username: str = Form(...), password: str = Form(...)):
+    def __init__(self, username: Optional[str] = Form(None), password: Optional[str] = Form(None), token: Optional[str] = Form(None)):
         self.username = username
         self.password = password
+        self.token = token
 
 # class RequestImage(BaseModel):
 #     parameter: ImagesUsersSchema = Form(...)

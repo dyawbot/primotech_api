@@ -6,6 +6,7 @@ from app.db import session
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.users import UserSchema, RequestUser, Response, RequestLoginUser
 import app.repository.users as user
+from app.utils.conver_model_to_dict import model_to_dict
 
 router = APIRouter()
 
@@ -41,12 +42,18 @@ async def get_user_with_images(db:AsyncSession = Depends(session.get_db), skip: 
 
 @router.post('/login')
 async def login_user(request: RequestLoginUser = Depends(RequestLoginUser), db:AsyncSession = Depends(session.get_db)):
-  
-    _result =await  user.get_user_by_id(db, request.username, request.password)
+    print()
+    print()
+    print()
+    print(request.token)
+    print()
+    print()
+    print()
+    _result =await  user.get_user_by_id(db, request.username, request.password, request.token)
 
     if _result.code != 200:
         raise HTTPException(status_code=_result.code, detail=_result.message)
     else:
-        return Response(code=200, status=_result.status, message=_result.message, result=_result.result).dict(exclude_none=True)
-
-
+        user_data = model_to_dict(_result.result)
+        user_data["token"] = _result.token
+        return Response(code=200, status=_result.status, message=_result.message, token=_result.token, result=user_data).dict(exclude_none=True)

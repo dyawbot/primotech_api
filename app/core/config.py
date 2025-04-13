@@ -15,6 +15,16 @@ class Settings(BaseSettings):
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
+    print()
+    print()
+    print()
+    print()
+    print(SECRET_KEY)
+    print()
+    print()
+    print()
+    print()
+
     # NGROK_AUTH_TOKEN: str = os.getenv("NGROK_AUTH_TOKEN", "")
     # NGROK_EDGE: str = os.getenv("NGROK_EDGE", "edge:edghts_"  )
 

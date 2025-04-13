@@ -5,13 +5,22 @@ from sqlalchemy.exc import IntegrityError
 from app.model.users import Users, Images
 from app.schemas.users import UserSchema, RequestUser
 from app.model.helper import StatusHelper
+from app.core.config import settings
 from sqlalchemy.future import select
 from app.utils import hash_password as hash
 from fastapi import status
 
+from datetime import datetime, timedelta
+from typing import Optional
+from jose import JWTError, jwt
+
 import re
 
 
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 async def get_users(db:AsyncSession, skip:int=0,limit:int=5):
@@ -48,27 +57,6 @@ async def get_generated_id(db: AsyncSession):
         return None
 
 
-async def get_user_by_id(db:AsyncSession, user_id: int, password: str):
-    try:
-        stmt = select(Users).where(Users.userId == user_id)
-        result = await db.execute(stmt)
-        _user = result.scalar_one_or_none()
-
-        if _user is None:
-            return StatusHelper(code=404, status="Empty", message="User is not registered")
-      
-        if(not hash.verify_password(password, _user.password)):
-            return StatusHelper(code=404, status="Empty", message="Wrong password")
-            
-        
-        else:
-            return StatusHelper(code=200, status="OK", message="Success getting the user", result=_user)
-    except IntegrityError as e:
-
-        return StatusHelper(code= 422, status="Error", message="An error gettitng the user")
-    except Exception as e:
-        return StatusHelper(code=500, status="Error", message="An unexpected error occured")
-    # return _user
 
 
 
@@ -168,3 +156,62 @@ async def get_all_users_with_images(db: AsyncSession, image_limit: int = 3,  ski
     except Exception as e:
         return StatusHelper(code=500, result="Error", message="An unexpected error occured")
 
+
+async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: str = None):
+    try:
+      
+
+        if token:
+            user_id = verify_token(token)
+            if not isinstance(user_id, str):
+                print(type(user_id))
+                return user_id
+
+        stmt = select(Users).where(Users.userId == user_id)
+        result = await db.execute(stmt) 
+        _user = result.scalar_one_or_none()
+        
+        if _user is None:
+            return StatusHelper(code=404, status="Empty", message="User is not registered")
+        if  password is not None:
+            if(not hash.verify_password(password, _user.password)):
+                return StatusHelper(code=404, status="Empty", message="Wrong password")
+            
+        # else:
+        jwt_data = {"sub": _user.userId, "name" : _user.username, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
+        return StatusHelper(code=200, status="OK", message="Success getting the user", token=access_token, result=_user)
+           
+                
+    except IntegrityError as e:
+
+        return StatusHelper(code= 422, status="Error", message="An error gettitng the user")
+    except Exception as e:
+        print(e)
+        return StatusHelper(code=500, status="Error", message="An unexpected error occured")
+    # return _user
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.now() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = expire.timestamp()
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode,  SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= "Invalid token")
+        return str(username)
+    except JWTError as e:
+        print(str(e))
+        return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= str(e))
+
+        
+# def get_user(user_id: str) -> Users:
