@@ -7,8 +7,10 @@ from typing import Annotated
 from app.repository import images
 from app.db import session
 from app.model.helper import UserImageHelper
-from app.core.config import UPLOAD_DIR
+from app.core.config import UPLOAD_DIR, UPLOAD_TRAINING_DIR
 from app.schemas.users import  RequestUser, Response
+from app.utils import image_compression
+from app.utils.image_rename import hash_file
 from app.utils.removed_characters import clean_string as cs
 import os
 import hashlib
@@ -55,26 +57,42 @@ async def upload_images(username: Annotated[str, Form()], file: UploadFile = Fil
     # user_hashed = get_hashed_key(username)
     filename = file.filename
     filename = cs(filename)
+    
     file_extension = filename.split(".")[-1].lower()
-    user_folder = UPLOAD_DIR / str(username)
+    training_path_folder = UPLOAD_TRAINING_DIR / "receipts"
     allow_image_extension = ["png", "jpeg", "jpg"]
+    training_path_folder.mkdir(parents=True, exist_ok=True)
+
+    user_folder = UPLOAD_DIR / str(username)
     user_folder.mkdir(parents=True, exist_ok=True) 
     
     if file_extension not in allow_image_extension:
         raise HTTPException(status_code=400, detail="File type must be PNG, JPEG or JPG")
     
-    file_path = user_folder / filename
-    with open(file_path, "wb") as f:
+    filename = await hash_file(file=file, length=10)
+    filename = filename + "." + file_extension
+    print(filename)
+    training_file_path = training_path_folder / filename
+    with open(training_file_path, "wb") as f:
+        await file.seek(0)  # reset pointer
         content = await file.read()  
-        f.write(content)  
+        f.write(content) 
+
+
+    # file_path = user_folder / filename
+    # with open(file_path, "wb") as f:
+    #     content = await file.read()  
+    #     f.write(content)  
 
     image_schema = UserImageHelper(username=username, image_name=filename, image_url=f"/images/{username}/{filename}")
-    response =await images.save_image_data(db, image_schema)
+    response =await images.save_image_data(db=db, images=image_schema,image_file= file)
    
 
     if response.code != 200:
+        # await image_compression.image_compression(file,filename,user_folder)
         raise HTTPException(status_code=response.code, detail=response.message)
     else:
+        await image_compression.image_compression(file=file,file_name=filename, file_path=user_folder)
         return Response(code=response.code,status=response.status, message=response.message, result=response.result).dict(exclude_none=True)
     
     

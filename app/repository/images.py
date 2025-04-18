@@ -3,11 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
-from  fastapi import status
+from  fastapi import status, UploadFile
 from app.schemas.users import ImagesUsersSchema
 from app.model.helper import UserImageHelper, StatusHelper
 from app.model.users import Images, Users
 from app.utils.check_file_name_exist import check_image_file_if_exist
+from app.utils.image_compression import image_compression
+
 
 
 
@@ -57,7 +59,7 @@ async def get_image_by_id_repo(db:AsyncSession, username: str):
 #         return StatusHelper(code=status.HTTP_500_INTERNAL_SERVER_ERROR, status="Error", message=str(e))
             
 
-async def save_image_data(db: AsyncSession, images: UserImageHelper):
+async def save_image_data(db: AsyncSession, images: UserImageHelper, image_file: UploadFile):
     try:
         stmt = select(Users).where(Users.userId == images.username)
         _result = await db.execute(stmt)
@@ -66,11 +68,15 @@ async def save_image_data(db: AsyncSession, images: UserImageHelper):
         if _user is None:
             return StatusHelper(code=status.HTTP_404_NOT_FOUND, status="Empty", message="User is not registered")
         else:
+            
+
+
             if await check_image_file_if_exist(db=db, filename=images.image_name):
                 _images = Images(image_name= images.image_name, image_url=images.image_url, user_id=_user.id)
                 db.add(_images)
                 await db.commit()
                 await db.refresh(_images)
+
                 return StatusHelper(code=status.HTTP_200_OK, status="OK", message="User save an image successfully", result= _images)
             else:
                 return StatusHelper(code=status.HTTP_422_UNPROCESSABLE_ENTITY,status="existed", message="Image name is already existed")

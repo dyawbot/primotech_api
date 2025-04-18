@@ -42,13 +42,7 @@ async def get_user_with_images(db:AsyncSession = Depends(session.get_db), skip: 
 
 @router.post('/login')
 async def login_user(request: RequestLoginUser = Depends(RequestLoginUser), db:AsyncSession = Depends(session.get_db)):
-    print()
-    print()
-    print()
-    print(request.token)
-    print()
-    print()
-    print()
+
     _result =await  user.get_user_by_id(db, request.username, request.password, request.token)
 
     if _result.code != 200:

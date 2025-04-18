@@ -33,4 +33,6 @@ class Settings(BaseSettings):
 
 settings = Settings()
 UPLOAD_DIR = Path("assets/images/receipts")
+UPLOAD_TRAINING_DIR = Path("assets/training_images")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True) 
+UPLOAD_TRAINING_DIR.mkdir(parents=True, exist_ok=True) 
