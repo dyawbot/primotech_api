@@ -49,9 +49,9 @@ app = FastAPI(
     # lifespan=lifespan 
 )
 
-origin=[
+origin=[    
     "http://localhost:8080",
-    "http://192.168.1.5:8080",
+    "http://192.168.1.4:8080",
     "http://192.168.1.8:8080",
     "https://*.ngrok-free.app"
 ]

@@ -8,7 +8,7 @@ load_dotenv(override=True)
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Default Project")
-    PROJECT_VERSION: str = os.getenv("PROJECT_VERSION", "1.0.0")
+    PROJECT_VERSION: str = os.getenv("PROJECT_VERSION",)
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     DATABASE_URL_SYNC: str = os.getenv("DATABASE_URL_SYNC")
     SECRET_KEY: str = os.getenv("SECRET_KEY")

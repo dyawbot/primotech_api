@@ -136,10 +136,7 @@ async def get_all_users_with_images(db: AsyncSession, image_limit: int = 3,  ski
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "phone_number": user.phone_number,
-                "images": [
-                    {"id": img.id, "image_url": img.image_url}
-                    for img in images[:3]  
-                ]
+                "images": len(images)
             })
             
         print(user_images_lists)
