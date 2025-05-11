@@ -57,6 +57,7 @@ async def upload_images(username: Annotated[str, Form()], file: UploadFile = Fil
     # user_hashed = get_hashed_key(username)
     filename = file.filename
     filename = cs(filename)
+ 
     
     file_extension = filename.split(".")[-1].lower()
     training_path_folder = UPLOAD_TRAINING_DIR / "receipts"
@@ -70,6 +71,7 @@ async def upload_images(username: Annotated[str, Form()], file: UploadFile = Fil
         raise HTTPException(status_code=400, detail="File type must be PNG, JPEG or JPG")
     
     filename = await hash_file(file=file, length=10)
+    new_filename = filename
     filename = filename + "." + file_extension
     print(filename)
     training_file_path = training_path_folder / filename
@@ -83,8 +85,8 @@ async def upload_images(username: Annotated[str, Form()], file: UploadFile = Fil
     # with open(file_path, "wb") as f:
     #     content = await file.read()  
     #     f.write(content)  
-
-    image_schema = UserImageHelper(username=username, image_name=filename, image_url=f"/images/{username}/{filename}")
+    new_filename = new_filename + ".jpg"
+    image_schema = UserImageHelper(username=username, image_name=new_filename, image_url=f"/images/{username}/{new_filename}")
     response =await images.save_image_data(db=db, images=image_schema,image_file= file)
    
 
