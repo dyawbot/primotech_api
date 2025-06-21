@@ -51,3 +51,4 @@ async def login_user(request: RequestLoginUser = Depends(RequestLoginUser), db:A
         user_data = model_to_dict(_result.result)
         user_data["token"] = _result.token
         return Response(code=200, status=_result.status, message=_result.message, token=_result.token, result=user_data).dict(exclude_none=True)
+

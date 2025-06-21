@@ -16,6 +16,8 @@ from jose import JWTError, jwt
 
 import re
 
+from app.utils.email_verification import send_verification_email
+
 
 
 SECRET_KEY = settings.SECRET_KEY
@@ -63,32 +65,40 @@ async def get_generated_id(db: AsyncSession):
 async def create_user(db: Session, user: RequestUser):
 
     _get_last_id =await  get_generated_id(db)
-    print("")
-    print("")
-    print("")
-    print(_get_last_id)
-    print("")
-    print("")
-    print("")
     if  _get_last_id is not None:
         _get_last_id = _get_last_id.userId[1:]
         _get_incremented_user_id = int(_get_last_id) + 1
     else:
         _get_incremented_user_id = 10001
+
     _user = Users(userId=f"P{_get_incremented_user_id}", 
                   username= user.username,
                   first_name = user.first_name,
                   last_name = user.last_name,
                   phone_number = user.phone_number,
+                  email = user.email,
                   password = hash.hash_password(user.password))
     
    
     try:
-        db.add(_user)
-        await db.commit()
-        await db.refresh(_user)
+        jwt_data = {"sub": _user.userId, "name" : _user.username, "email" : _user.email, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
+        is_success = send_verification_email(toEmail=_user.email, token=access_token)
+        if(is_success):
+            print("YES!")
+            db.add(_user)
+            await db.commit()
+            await db.refresh(_user)
+            return StatusHelper(code=status.HTTP_201_CREATED, status="OK", message="User created successfully", result=_user)
 
-        return StatusHelper(code=status.HTTP_201_CREATED, status="OK", message="User created successfully", result=_user)
+        else:
+            print("FUCK!")
+            return StatusHelper(code=400, status="Error", message= "Error sending an email. Please contact developer and ask for this error")
+
+
+        
+        
     except IntegrityError as e:
         await db.rollback()
 
@@ -171,11 +181,14 @@ async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: st
         if _user is None:
             return StatusHelper(code=404, status="Empty", message="User is not registered")
         if  password is not None:
+            #the logic for verification of email is in here...
+            if(not _user.is_verified):
+                return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status="Unverified Email Address", message="Please verify your email address before logging in.")
             if(not hash.verify_password(password, _user.password)):
                 return StatusHelper(code=404, status="Empty", message="Wrong password")
             
         # else:
-        jwt_data = {"sub": _user.userId, "name" : _user.username, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
+        jwt_data = {"sub": _user.userId, "name" : _user.username, "email" : _user.email, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
         return StatusHelper(code=200, status="OK", message="Success getting the user", token=access_token, result=_user)

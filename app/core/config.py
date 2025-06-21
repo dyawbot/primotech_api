@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    API_URL : str = os.getenv("API_URL", "http://localhost:8080")
+    ADMIN_EMAIL : str = os.getenv("ADMIN_EMAIL", "primotech@gmail.com")
+    ADMIN_PASS : str = os.getenv("ADMIN_PASS", "")
 
     print()
     print()

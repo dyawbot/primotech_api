@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, Depends, HTTPException
+from fastapi import APIRouter, File, Request, UploadFile, Form, Depends, HTTPException
 from fastapi.responses import FileResponse
 
 from sqlalchemy.orm import Session
@@ -12,12 +12,15 @@ from app.schemas.users import  RequestUser, Response
 from app.utils import image_compression
 from app.utils.image_rename import hash_file
 from app.utils.removed_characters import clean_string as cs
+from app.api.v1.authentications import authenticate_user as auth
 import os
 import hashlib
 
 
 
 image_router = APIRouter()
+protected_router = APIRouter(dependencies=[Depends(auth)])
+
 
 
 def get_hashed_key(user_id: str) -> str:
@@ -31,7 +34,7 @@ async def get(username: Annotated[str, Form()], db: Session=Depends(session.get_
 
 @image_router.get('/{id}/{filename}')
 async def get_image_by_id(id: str, filename: str):
-    # user_hash = get_hashed_key(id)  
+    # user_hash = get_hashed_key(id)    
     user_folder = os.path.join(UPLOAD_DIR, id)
     file_path = os.path.join(user_folder, filename)
     print(file_path)
@@ -39,8 +42,12 @@ async def get_image_by_id(id: str, filename: str):
         raise HTTPException(status_code=404, detail="Image not found")
     return FileResponse(file_path)  
 
-@image_router.get('/by-images')
-async def get_all_image_by_id(id:str, db: AsyncSession = Depends(session.get_db)):
+@protected_router.get('/by-images')
+async def get_all_image_by_id(id:str, request: Request, db: AsyncSession = Depends(session.get_db)):
+    user  = request.state.user
+    print("")
+    print(user)
+    print("")
     result = await images.get_image_by_id_repo(db=db, username=id)
 
     if result.code != 200:
@@ -52,8 +59,8 @@ async def get_all_image_by_id(id:str, db: AsyncSession = Depends(session.get_db)
 
 
 
-@image_router.post('/upload')
-async def upload_images(username: Annotated[str, Form()], file: UploadFile = File(...), db: AsyncSession = Depends(session.get_db)):
+@protected_router.post('/upload')
+async def upload_images(username: Annotated[str, Form()], request: Request, file: UploadFile = File(...), db: AsyncSession = Depends(session.get_db)):
     # user_hashed = get_hashed_key(username)
     filename = file.filename
     filename = cs(filename)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, func
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, TIMESTAMP, func
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 
@@ -12,6 +12,7 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     userId = Column(String, unique= True)
     username = Column(String, unique = True)
+    email = Column(String, unique = True)
     first_name =Column(String, nullable=True)
     last_name =Column(String, nullable=True)
     phone_number = Column(String, nullable=True)
@@ -19,6 +20,7 @@ class Users(Base):
     image_url_key = relationship("Images", back_populates="users_key")
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    is_verified = Column(Boolean, nullable= False, default= False)
     
 
 

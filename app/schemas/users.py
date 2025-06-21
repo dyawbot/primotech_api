@@ -37,13 +37,15 @@ class RequestUser:
                  password: str = Form(...),
                  first_name: Optional[str] = Form(None),
                  last_name: Optional[str] =Form(None),
-                 phone_number: Optional[str] = Form(None)):
+                 phone_number: Optional[str] = Form(None),
+                 email : Optional[str] = Form(None)):
         
         self.username = username
         self.first_name = first_name
         self.last_name = last_name
         self.phone_number = phone_number 
         self.password = password
+        self.email = email
         
 
 
