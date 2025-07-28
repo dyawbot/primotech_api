@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from app.db.session import engine, Base
 from app.api.v1.router import api_router
 from app.core.config import settings, UPLOAD_DIR
@@ -22,6 +24,7 @@ print(f"Secret Key: {settings.SECRET_KEY}")
 print(" ")
 print(" ")
 print(" ")
+templates = Jinja2Templates(directory="app/templates")
 
 # APPLICATION_PORT = 5000
 
@@ -72,10 +75,21 @@ async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-@app.get('/', tags=["Root"])
-async def Home():
-    print("HELLO WOLRD")
-    return "Welcome Userssssssss"
+@app.get('/',response_class=HTMLResponse, tags=["Root"])
+async def Home(request: Request):
+    # html_content = """
+    # <html>
+    #     <head>
+    #         <title>Home Page</title>
+    #     </head>
+    #     <body>
+    #         <h1>Welcome Userssssssss</h1>
+    #         <p>This is a simple info page served as HTML.</p>
+    #     </body>
+    # </html>
+    # """
+    # return html_content
+    return templates.TemplateResponse("home.html", {"request": request})
 
 @app.on_event("shutdown")
 async def shutdown_db():
