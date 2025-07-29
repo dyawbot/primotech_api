@@ -15,13 +15,20 @@ spec:
         app: primovative-app-api
     spec:
       containers:
-      - name: nodeserver
-        image: primovative/primovative-app-api:latest
-        ports:
-        - containerPort: 3000
-
+        - name: nodeserver
+          image: primovative/primovative-app-api:latest
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-socket
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,7 +38,7 @@ spec:
     app: primovative-app-api
   type: LoadBalancer
   ports:
-  - protocol: TCP
-    port: 5000
-    targetPort: 3000
-    nodePort: 31110
+    - protocol: TCP
+      port: 5000
+      targetPort: 3000
+      nodePort: 31110
