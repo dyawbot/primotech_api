@@ -9,8 +9,14 @@ load_dotenv(override=True)
 class Settings(BaseSettings):
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Default Project")
     PROJECT_VERSION: str = os.getenv("PROJECT_VERSION",)
+
+
+    #DATABASES
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     DATABASE_URL_SYNC: str = os.getenv("DATABASE_URL_SYNC")
+    DB_WEBUDGET_URL: str = os.getenv("DB_WEBUDGET_URL")
+    DB_WEBUDGET_URL_SYNC: str = os.getenv("DB_WEBUDGET_URL_SYNC")
+
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
