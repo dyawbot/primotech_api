@@ -1,5 +1,5 @@
 from enum import Enum
-from app.model.users import Users, Images
+from app.model.UserModels.users import Users, Images
 
 
 class Tables(Enum):

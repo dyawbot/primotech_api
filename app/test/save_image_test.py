@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from app.model.users import Users
-from app.model.users import Images
-from app.repository.images import save_image_data
-from app.schemas.users import ImagesUsersSchema
+from app.model.UserModels.users import Users
+from app.model.UserModels.users import Images
+from app.repository.ExpenseManagementRepository.ImageProcessing.images import save_image_data
+from app.schemas.UserSchemas.users import ImagesUsersSchema
 from app.model.helper import StatusHelper, UserImageHelper
 
 @pytest.fixture

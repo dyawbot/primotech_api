@@ -1,9 +1,9 @@
-from sqlalchemy import text
+from sqlalchemy import or_, text
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from app.model.users import Users, Images
-from app.schemas.users import UserSchema, RequestUser
+from app.model.UserModels.users import Users, Images
+from app.schemas.UserSchemas.users import UserSchema, RequestUser
 from app.model.helper import StatusHelper
 from app.core.config import settings
 from sqlalchemy.future import select
@@ -20,9 +20,9 @@ from app.utils.email_verification import send_verification_email
 
 
 
-SECRET_KEY = settings.SECRET_KEY
-ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 async def get_users(db:AsyncSession, skip:int=0,limit:int=5):
@@ -174,7 +174,11 @@ async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: st
                 print(type(user_id))
                 return user_id
 
-        stmt = select(Users).where(Users.userId == user_id)
+        stmt = select(Users).where(
+            or_(
+                Users.userId == user_id, 
+                Users.username == user_id, 
+                Users.email == user_id))
         result = await db.execute(stmt) 
         _user = result.scalar_one_or_none()
         

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verified</title>
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        .card h2 {
+            color: #2b9348;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .card p {
+            font-size: 1.1em;
+            color: #555;
+        }
+        .checkmark {
+            font-size: 60px;
+            color: #2b9348;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="checkmark">✅</div>
+        <h2>Email Verified Successfully!</h2>
+        <p>{{ message }}</p>
+    </div>
+</body>
+</html>

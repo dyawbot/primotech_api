@@ -2,9 +2,9 @@ import pytest
 import warnings
 from unittest.mock import MagicMock
 
-from app.model.users import Users  # Import your actual User model
+from app.model.UserModels.users import Users  # Import your actual User model
 from app.db.session import get_db  # Import your DB session function
-from app.repository.images import get_user_id_by_user_id  # Import your function
+from app.repository.ExpenseManagementRepository.ImageProcessing.images import get_user_id_by_user_id  # Import your function
 
 # Sample user data
 mock_user = Users(id=1, userId="P1001", username="testuser")

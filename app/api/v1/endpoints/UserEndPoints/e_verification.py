@@ -1,18 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException,status
+from fastapi import APIRouter, Depends, HTTPException, Request,status
 from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from jose import JWTError
 import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import session
+from app.db.database import get_dev_db
 from app.model.helper import StatusHelper
-from app.repository.users import ALGORITHM, SECRET_KEY
-from app.repository.verification_and_activation import activate_email as activate
-from app.schemas.users import Response
+from app.repository.UserRepository.users import ALGORITHM, SECRET_KEY
+from app.repository.UserRepository.verification_and_activation import activate_email as activate
+from app.schemas.UserSchemas.users import Response
 
 
 
 
 router = APIRouter()
+
+
+templates = Jinja2Templates(directory="app/templates")
 
 
 def verify_token(token: str):
@@ -27,7 +32,7 @@ def verify_token(token: str):
         return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= str(e))
 
 @router.get("/me")
-async def verify_and_activate_email(id:str, db: AsyncSession = Depends(session.get_db)):
+async def verify_and_activate_email(id:str, request: Request, db: AsyncSession = Depends(get_dev_db)):
 
     verified_email= verify_token(id)
     
@@ -40,15 +45,19 @@ async def verify_and_activate_email(id:str, db: AsyncSession = Depends(session.g
         raise HTTPException(status_code=_result.code, detail=_result.message)
     else:
         # return Response(code=200, status=_result.status, message=_result.message, result= None).dict(exclude_none=True)
-          return HTMLResponse(
-        content=f"""
-            <html>
-                <head><title>Email Verified</title></head>
-                <body>
-                    <h2>🎉 Email Verified Successfully!</h2>
-                    <p>{_result.message}</p>
-                </body>
-            </html>
-        """,
-        status_code=200
-    )
+    #       return HTMLResponse(
+    #     content=f"""
+    #         <html>
+    #             <head><title>Email Verified</title></head>
+    #             <body>
+    #                 <h2>🎉 Email Verified Successfully!</h2>
+    #                 <p>{_result.message}</p>
+    #             </body>
+    #         </html>
+    #     """,
+    #     status_code=200
+    # )
+        return templates.TemplateResponse("email_verified.html", {
+        "request": request,
+        "message": _result.message
+    })

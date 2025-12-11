@@ -1,11 +1,9 @@
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, TIMESTAMP, func
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from app.db.session import Base
+from app.model.declarativebase.base import ExternalUserbase
 
-
-
-
-class Users(Base):
+class Users(ExternalUserbase):
     __tablename__ = 'tbl_users'
 
 
@@ -25,7 +23,7 @@ class Users(Base):
 
 
 
-class Images(Base):
+class Images(ExternalUserbase):
     __tablename__ = 'tbl_images'
     id = Column(Integer, primary_key=True)
     image_name = Column(String, nullable=True)

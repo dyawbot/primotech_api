@@ -4,11 +4,12 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
-from app.repository import images
+from app.db.database import get_dev_db
+from app.repository.ExpenseManagementRepository.ImageProcessing import images
 from app.db import session
 from app.model.helper import UserImageHelper
 from app.core.config import UPLOAD_DIR, UPLOAD_TRAINING_DIR
-from app.schemas.users import  RequestUser, Response
+from app.schemas.UserSchemas.users import  RequestUser, Response
 from app.utils import image_compression
 from app.utils.image_rename import hash_file
 from app.utils.removed_characters import clean_string as cs
@@ -28,7 +29,7 @@ def get_hashed_key(user_id: str) -> str:
 
 
 @image_router.post('/')
-async def get(username: Annotated[str, Form()], db: Session=Depends(session.get_db)):
+async def get(username: Annotated[str, Form()], db: Session=Depends(get_dev_db)):
     _images =await images.get_user_id_by_user_id(db,username)
     return _images
 
@@ -43,7 +44,7 @@ async def get_image_by_id(id: str, filename: str):
     return FileResponse(file_path)  
 
 @protected_router.get('/by-images')
-async def get_all_image_by_id(id:str, request: Request, db: AsyncSession = Depends(session.get_db)):
+async def get_all_image_by_id(id:str, request: Request, db: AsyncSession = Depends(get_dev_db)):
     user  = request.state.user
     print("")
     print(user)
@@ -60,7 +61,7 @@ async def get_all_image_by_id(id:str, request: Request, db: AsyncSession = Depen
 
 
 @protected_router.post('/upload')
-async def upload_images(username: Annotated[str, Form()], request: Request, file: UploadFile = File(...), db: AsyncSession = Depends(session.get_db)):
+async def upload_images(username: Annotated[str, Form()], request: Request, file: UploadFile = File(...), db: AsyncSession = Depends(get_dev_db)):
     # user_hashed = get_hashed_key(username)
     filename = file.filename
     filename = cs(filename)

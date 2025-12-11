@@ -8,7 +8,7 @@ def send_verification_email(toEmail, token) -> bool:
         verification_link =  f"{settings.API_URL}/me?id={token}"
         msg = EmailMessage()
         msg["Subject"] = "Verify Account"
-        msg["From"] = settings.ADMIN_EMAIL
+        msg["From"] = "Primovative Team <noreply@primovative.com>" 
         msg["To"] = toEmail
         # msg.set_content(f"Click here to verify your email: {verification_link}")
         msg.set_content(

@@ -4,9 +4,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
 from  fastapi import status, UploadFile
-from app.schemas.users import ImagesUsersSchema
+from app.schemas.UserSchemas.users import ImagesUsersSchema
 from app.model.helper import UserImageHelper, StatusHelper
-from app.model.users import Images, Users
+from app.model.UserModels.users import Images, Users
 from app.utils.check_file_name_exist import check_image_file_if_exist
 from app.utils.image_compression import image_compression
 

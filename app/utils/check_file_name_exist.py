@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.model.users import Images
+from app.model.UserModels.users import Images
 
 
 async def check_image_file_if_exist(db: AsyncSession, filename: str) -> bool:   

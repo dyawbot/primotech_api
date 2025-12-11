@@ -2,8 +2,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from app.model.users import Users, Images
-from app.schemas.users import UserSchema, RequestUser
+from app.model.UserModels.users import Users, Images
+from app.schemas.UserSchemas.users import UserSchema, RequestUser
 from app.model.helper import StatusHelper
 from app.core.config import settings
 from sqlalchemy.future import select
@@ -16,9 +16,9 @@ from jose import JWTError, jwt
 
 import re
 
-SECRET_KEY = settings.SECRET_KEY
-ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 

@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.db.session import engine, Base
+from app.db.session import MODEL_REGISTRY,  get_engine
 from app.api.v1.router import api_router
 from app.core.config import settings, UPLOAD_DIR
 from contextlib import asynccontextmanager
@@ -19,8 +19,8 @@ print(" ")
 print(" ")
 print(" ")
 print(" ")
-print(f"Database URL: {settings.DATABASE_URL}")
-print(f"Secret Key: {settings.SECRET_KEY}")
+print(f"Database URL: {settings.db_names}")
+print(f"Secret Key: {settings.secret_key}")
 print(" ")
 print(" ")
 print(" ")
@@ -28,27 +28,10 @@ templates = Jinja2Templates(directory="app/templates")
 
 # APPLICATION_PORT = 5000
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     print("\n\n\n")
-#     print("FUCK")
-#     print("\n\n\n")
-#     logger.info(f"Setting up Ngrok Tunnel {settings.NGROK_AUTH_TOKEN}")
-#     ngrok.set_auth_token(settings.NGROK_AUTH_TOKEN)  # ✅ Use environment settings
-#     tunnel = ngrok.forward(
-#         addr=APPLICATION_PORT,
-#         labels=settings.NGROK_EDGE,
-#         proto="labeled",
-#     )
-#     # logger.info(f"Ngrok Tunnel URL: { tunnel.metadata}")
-#     yield
-#     logger.info("Tearing Down Ngrok Tunnel")
-#     ngrok.disconnect()
-
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    version=settings.PROJECT_VERSION,
+    title=settings.name,
+    version=settings.version,
     # lifespan=lifespan 
 )
 
@@ -72,23 +55,14 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    for db_name, alias in settings.db_schemas.items():
+        metadata = MODEL_REGISTRY[alias]
+        engine = get_engine(db_name)
+        async with engine.begin() as conn:
+            await conn.run_sync(metadata.create_all)
 
 @app.get('/',response_class=HTMLResponse, tags=["Root"])
 async def Home(request: Request):
-    # html_content = """
-    # <html>
-    #     <head>
-    #         <title>Home Page</title>
-    #     </head>
-    #     <body>
-    #         <h1>Welcome Userssssssss</h1>
-    #         <p>This is a simple info page served as HTML.</p>
-    #     </body>
-    # </html>
-    # """
-    # return html_content
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.on_event("shutdown")
@@ -96,12 +70,5 @@ async def shutdown_db():
     await engine.dispose()
 
 app.include_router(api_router)
-
-
-# ✅ Run the application
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run("main:app", host="0.0.0.0", port=APPLICATION_PORT, reload=True)
-
 
 
