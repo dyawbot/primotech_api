@@ -2,7 +2,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app.core.config import settings
-from app.model.declarativebase.base import PrimoUserBase, ExternalUserbase
+from app.model.declarativebase.base import PrimoUserBase, ExternalUserbase, WeBudgetBase
 
 
 
@@ -13,6 +13,7 @@ _session_cache = {}
 MODEL_REGISTRY = {
     "primoUser": PrimoUserBase.metadata,
     "externalUser": ExternalUserbase.metadata,
+    "webudget": WeBudgetBase.metadata,
 }
 
 # DB_MODELS = {
@@ -60,3 +61,18 @@ async def get_db(db_name:str):
             raise e
         finally:
             await db.close()  
+
+
+#ENGINES
+# engine = create_async_engine(settings.DATABASE_URL,echo=True)
+# webudget_engine = create_async_engine(settings.DB_WEBUDGET_URL, echo=True)
+
+
+#SESSION MAKERS
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
+# session_webudget = sessionmaker(autocommit=False, autoflush=False, bind=webudget_engine, class_=AsyncSession)
+
+
+
+
+
