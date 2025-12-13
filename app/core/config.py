@@ -33,6 +33,9 @@ class Config:
     @property
     def db_names(self) -> List[str]:
         return self._config["databases"]["name"]
+    
+
+
     @property
     def db_schemas(self) -> Dict[str, str]:
         """
@@ -61,6 +64,8 @@ class Config:
         return f"{driver}://{g['user']}:{g['password']}@{g['host']}:{g['port']}/{db_name}"
     
 
+
+#basically settings is not part of the code anymore its just loading from yaml
 class Settings(BaseSettings):
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Default Project")
     PROJECT_VERSION: str = os.getenv("PROJECT_VERSION",)
