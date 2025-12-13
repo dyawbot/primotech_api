@@ -17,3 +17,8 @@ class Users(WeBudgetBase, Stamp):
     partners = relationship("PartnerModel", back_populates="user")
     families = relationship("FamilyModels", back_populates="user")
     sync_logs = relationship("SyncLogModels", back_populates="user")
+    categories = relationship("CategoryModel", back_populates="user")
+    bank_accounts = relationship("BankAccountsModel", back_populates="user")
+    transactions = relationship("TrasactionsModels", back_populates="user")
+    recurring_transactions = relationship("RecurringTransactionModel", back_populates="user")
+    analytic_caches = relationship("AnalyticCacheModels", back_populates="user")
