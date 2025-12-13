@@ -1,5 +1,5 @@
 from app.model.declarativebase.base import WeBudgetBase
-from app.model.we_budget.base import TimestampMixIn as Stamp
+from app.model.we_budget.base.timestamp_mixin import TimestampMixIn as Stamp
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 

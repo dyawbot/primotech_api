@@ -15,15 +15,15 @@ from loguru import logger
 
 # users.Base.metadata.create_all(bind=engine)
 # from app.core.config import settings
-print(" ")
-print(" ")
-print(" ")
-print(" ")
-print(f"Database URL: {settings.db_names}")
-print(f"Secret Key: {settings.secret_key}")
-print(" ")
-print(" ")
-print(" ")
+# print(" ")
+# print(" ")
+# print(" ")
+# print(" ")
+# print(f"Database URL: {settings.db_names}")
+# print(f"Secret Key: {settings.secret_key}")
+# print(" ")
+# print(" ")
+# print(" ")
 templates = Jinja2Templates(directory="app/templates")
 
 # APPLICATION_PORT = 5000

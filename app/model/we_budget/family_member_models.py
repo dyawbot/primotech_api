@@ -1,7 +1,8 @@
 from app.model.declarativebase.base import WeBudgetBase
-from app.model.we_budget.base import TimestampMixIn as Stamp
-from sqlalchemy import Column, ForeignKey, Integer, String
+from app.model.we_budget.base.timestamp_mixin import TimestampMixIn as Stamp
 
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 class FamilyMemberModels(WeBudgetBase, Stamp):
     __tablename__ = "tbl_family_member"
 
@@ -10,7 +11,7 @@ class FamilyMemberModels(WeBudgetBase, Stamp):
     code = Column(String, nullable=False, index=True)
     member_name = Column(String, nullable=False, index=True)
     birthdate = Column(String, nullable=True, index=True)
-    relationship = Column(String, nullable=False, index=True)
+    family_relationship = Column(String, nullable=False, index=True)
 
 
     family = relationship("FamilyModels", back_populates="members")

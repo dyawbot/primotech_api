@@ -63,50 +63,54 @@ class Config:
         driver = "postgresql+asyncpg" if async_driver else "postgresql+psycopg2"
         return f"{driver}://{g['user']}:{g['password']}@{g['host']}:{g['port']}/{db_name}"
     
+    @property
+    def DATABASE_URL_SYNC(self) -> str:
+    # synchronous driver for Alembic migrations
+        return self.build_db_url(db_name="webudget_db", async_driver=False) 
 
 
 #basically settings is not part of the code anymore its just loading from yaml
-class Settings(BaseSettings):
-    PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Default Project")
-    PROJECT_VERSION: str = os.getenv("PROJECT_VERSION",)
+# class Settings(BaseSettings):
+#     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Default Project")
+#     PROJECT_VERSION: str = os.getenv("PROJECT_VERSION",)
 
 
    
 
-    SECRET_KEY: str = os.getenv("SECRET_KEY")
-    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-    API_URL : str = os.getenv("API_URL", "http://localhost:8080")
-    ADMIN_EMAIL : str = os.getenv("ADMIN_EMAIL", "primovative@gmail.com")
-    ADMIN_PASS : str = os.getenv("ADMIN_PASS", "")
+#     SECRET_KEY: str = os.getenv("SECRET_KEY")
+#     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
+#     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+#     API_URL : str = os.getenv("API_URL", "http://localhost:8080")
+#     ADMIN_EMAIL : str = os.getenv("ADMIN_EMAIL", "primovative@gmail.com")
+#     ADMIN_PASS : str = os.getenv("ADMIN_PASS", "")
 
 
-    #DATABASE
-    DATABASE_URL: str = os.getenv("DATABASE_URL")
-    USER_URL_DATABASE: str = os.getenv("USER_URL_DATABASE")
-    DB_WEBUDGET_URL: str = os.getenv("DB_WEBUDGET_URL")
+#     #DATABASE
+#     DATABASE_URL: str = os.getenv("DATABASE_URL")
+#     USER_URL_DATABASE: str = os.getenv("USER_URL_DATABASE")
+#     DB_WEBUDGET_URL: str = os.getenv("DB_WEBUDGET_URL")
 
-    #DATABASE SYNC
-    USER_URL_DATABASE_SYNC: str = os.getenv("USER_URL_DATABASE_SYNC")
-    DATABASE_URL_SYNC: str = os.getenv("DATABASE_URL_SYNC")
-    DB_WEBUDGET_URL_SYNC: str = os.getenv("DB_WEBUDGET_URL_SYNC")
+#     #DATABASE SYNC
+#     USER_URL_DATABASE_SYNC: str = os.getenv("USER_URL_DATABASE_SYNC")
+#     DATABASE_URL_SYNC: str = os.getenv("DATABASE_URL_SYNC")
+#     DB_WEBUDGET_URL_SYNC: str = os.getenv("DB_WEBUDGET_URL_SYNC")
 
 
-    print()
-    print()
-    print()
-    print()
-    print(SECRET_KEY)
-    print()
-    print()
-    print()
-    print()
+#     print()
+#     print()
+#     print()
+#     print()
+#     print(SECRET_KEY)
+#     print()
+#     print()
+#     print()
+#     print()
 
-    # NGROK_AUTH_TOKEN: str = os.getenv("NGROK_AUTH_TOKEN", "")
-    # NGROK_EDGE: str = os.getenv("NGROK_EDGE", "edge:edghts_"  )
+#     # NGROK_AUTH_TOKEN: str = os.getenv("NGROK_AUTH_TOKEN", "")
+#     # NGROK_EDGE: str = os.getenv("NGROK_EDGE", "edge:edghts_"  )
 
-    class Config:
-        env_file = ".env"   
+#     class Config:
+#         env_file = ".env"   
 
 
 

@@ -4,7 +4,8 @@ from sqlalchemy.orm import relationship
 
 # from app.db.session import BaseWeBudget
 from app.model.declarativebase.base import WeBudgetBase
-from app.model.we_budget.base import TimestampMixIn as Stamp
+from app.model.we_budget.base.timestamp_mixin import TimestampMixIn as Stamp
+
 
 class UserDeviceModels(WeBudgetBase, Stamp):
     __tablename__ = "tbl_user_device"

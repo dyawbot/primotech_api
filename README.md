@@ -33,12 +33,21 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
 - *NOTE: check the method for upgrade for it deletes or drop data on table and row*
     ```sh
     alembic revision --autogenerate -m "name of commit"
+    
+- or
+    
+    ```sh
+    python -m alembic alembic/nameofdb/alembic.ini revision --autogenerate -m "name of commit"
 
 2. **Manual Function**
 - manual function also generates code in the folder alembic/versions/.py
 - the difference between the autogenerate is that you manually code the **upgrade** and **downgrade** function
     ```sh
     alembic revision -m "name of commit"
+- or
+    ```s
+    python -m alembic alembic/nameofdb/alembic.ini revision -m "name of commit"
+
 
 3. **Update the table**
 - there are 2 ways to update the tables **upgrade** and **downgrade**
@@ -46,9 +55,19 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
     ```sh
     alembic upgrade head
 
+- or
+    ```sh
+    python -m alembic alembic/nameofdb/alembic.ini upgrade head
+
+
 - **DOWNGRADE**
     ```SH
     alembic downgrade head
+
+- or
+    ```sh
+    python -m alembic alembic/nameofdb/alembic.ini upgrade head
+
 
 
 ## 📜 License

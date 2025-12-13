@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 
 from app.model.declarativebase.base import WeBudgetBase
-from app.model.we_budget.base import TimestampMixIn as Stamp
+from app.model.we_budget.base.timestamp_mixin import TimestampMixIn as Stamp
 
 class Users(WeBudgetBase, Stamp):
     __tablename__ = 'tbl_user'
@@ -12,6 +12,7 @@ class Users(WeBudgetBase, Stamp):
     uid = Column(String, unique=True, index = True)
     name =Column(String, nullable = False)
     email = Column(String, unique = True, index = True)
+    password = Column(String, nullable = False)
 
     devices = relationship("UserDeviceModels", back_populates="user")
     partners = relationship("PartnerModel", back_populates="user")
