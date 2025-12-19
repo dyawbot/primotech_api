@@ -37,7 +37,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
 - or
     
     ```sh
-    python -m alembic alembic/nameofdb/alembic.ini revision --autogenerate -m "name of commit"
+    python -m alembic -c alembic/nameofdb/alembic.ini revision --autogenerate -m "name of commit"
 
 2. **Manual Function**
 - manual function also generates code in the folder alembic/versions/.py
@@ -46,7 +46,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
     alembic revision -m "name of commit"
 - or
     ```s
-    python -m alembic alembic/nameofdb/alembic.ini revision -m "name of commit"
+    python -m alembic -c alembic/nameofdb/alembic.ini revision -m "name of commit"
 
 
 3. **Update the table**
@@ -57,7 +57,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
 
 - or
     ```sh
-    python -m alembic alembic/nameofdb/alembic.ini upgrade head
+    python -m alembic -c alembic/nameofdb/alembic.ini upgrade head
 
 
 - **DOWNGRADE**
@@ -66,7 +66,7 @@ This is the API for PrimoTech, designed to handle authentication, user managemen
 
 - or
     ```sh
-    python -m alembic alembic/nameofdb/alembic.ini upgrade head
+    python -m alembic -c alembic/nameofdb/alembic.ini upgrade head
 
 
 

@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Path, Depends, Query, status
 # from app.core import config
 from app.db import session
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.database import get_dev_db
+from app.db.dependencies import get_dev_db
 from app.schemas.UserSchemas.users import UserSchema, RequestUser, Response, RequestLoginUser
 import app.repository.UserRepository.users as user
 from app.utils.conver_model_to_dict import model_to_dict
@@ -16,6 +16,8 @@ router = APIRouter()
 
 @router.post('/create')
 async def create(request: RequestUser = Depends(RequestUser), db:AsyncSession=Depends(get_dev_db)):
+
+    print(type(db))
     _result = await user.create_user(db,request)
     print(_result.code)
     if _result.code != status.HTTP_201_CREATED:

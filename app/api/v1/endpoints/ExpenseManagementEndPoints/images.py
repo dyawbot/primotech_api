@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
-from app.db.database import get_dev_db
+from app.db.dependencies import  get_dev_db
 from app.repository.ExpenseManagementRepository.ImageProcessing import images
 from app.db import session
 from app.model.helper import UserImageHelper

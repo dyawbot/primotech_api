@@ -46,7 +46,16 @@ class Config:
     
     @property
     def email(self) -> Dict[str, str]:
-        return self._config.get("email", {})    
+        return self._config.get("emails", {})    
+    
+    @property
+    def dev_url(self) -> str:
+        return self._config.get("url_dev", "http://localhost:8080")
+    
+    @property
+    def prod_url(self) -> str:
+        return self._config.get("url", "http://api.primovative.com")
+    
 
     @property
     def secret_key(self) -> str:

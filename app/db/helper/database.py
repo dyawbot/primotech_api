@@ -1,18 +1,9 @@
-from app.db import session
+from app.db import dependencies as session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.db_enum import DBNames
 
-def get_internal_user_db() -> AsyncSession:
-    return session.get_db(DBNames.PRIMOUSER.value)
 
-
-def get_dev_db() -> AsyncSession:
-    return session.get_db(DBNames.DEV_DB_POSTGRES.value)
-
-
-def get_webudget_db() -> AsyncSession:
-    return session.get_db(DBNames.WEBUDGET.value)
 # import app.db.session as Session
 
 # async def get_db():

@@ -16,9 +16,9 @@ from jose import JWTError, jwt
 
 import re
 
-SECRET_KEY = settings.secret_key
-ALGORITHM = settings.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+# SECRET_KEY = settings.secret_key
+# ALGORITHM = settings.algorithm
+# ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 

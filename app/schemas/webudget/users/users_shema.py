@@ -19,7 +19,7 @@ class UserDeviceRegistrationSchema(BaseModel):
     user_id: Optional[int] = None
     block_status: Optional[str] = None
     reason: Optional[str] = None
-    block_at = Optional[str] = None
+    block_at : Optional[str] = None
 
     class Config:
         orm_mode = True

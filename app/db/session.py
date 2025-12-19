@@ -49,18 +49,6 @@ def get_sessionmaker(db_name: str):
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
 
 
-async def get_db(db_name:str):
-
-    SessionLocal = get_sessionmaker(db_name)
-    async with SessionLocal() as db:  
-        try:
-            yield db
-        except Exception as e:
-            await db.rollback()  
-            print(f"(SESSION) An error occured: {e}")
-            raise e
-        finally:
-            await db.close()  
 
 
 #ENGINES

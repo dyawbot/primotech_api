@@ -1,4 +1,5 @@
-from sqlalchemy import Column, ForeignKey, String, Integer
+
+from sqlalchemy import Column, ForeignKey, String, Integer,Boolean
 from sqlalchemy.orm import relationship
 
 
@@ -13,8 +14,10 @@ class Users(WeBudgetBase, Stamp):
     name =Column(String, nullable = False)
     email = Column(String, unique = True, index = True)
     password = Column(String, nullable = False)
+    is_verified = Column(Boolean, nullable= False, default= False)
+    
 
-    devices = relationship("UserDeviceModels", back_populates="user")
+    devices = relationship("UserDeviceModels", back_populates="user",  cascade="all, delete-orphan")
     partners = relationship("PartnerModel", back_populates="user")
     families = relationship("FamilyModels", back_populates="user")
     sync_logs = relationship("SyncLogModels", back_populates="user")
@@ -22,4 +25,4 @@ class Users(WeBudgetBase, Stamp):
     bank_accounts = relationship("BankAccountsModel", back_populates="user")
     transactions = relationship("TrasactionsModels", back_populates="user")
     recurring_transactions = relationship("RecurringTransactionModel", back_populates="user")
-    analytic_caches = relationship("AnalyticCacheModels", back_populates="user")
+    analytic_caches = relationship("AnalyticCacheModel", back_populates="user")

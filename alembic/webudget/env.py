@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import create_engine, engine_from_config
 from sqlalchemy import pool
 from app.model.we_budget.users_models import Users
 from app.model.we_budget.user_device_models import UserDeviceModels
@@ -69,11 +69,16 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+
+    DATABASE_URL = config.get_main_option("sqlalchemy.url")
+    sync_url = DATABASE_URL.replace("+asyncpg", "")
+    connectable = create_engine(sync_url, poolclass=pool.NullPool)
+    
+    # connectable = engine_from_config(
+    #     config.get_section(config.config_ini_section, {}),
+    #     prefix="sqlalchemy.",
+    #     poolclass=pool.NullPool,
+    # )
 
     with connectable.connect() as connection:
         context.configure(

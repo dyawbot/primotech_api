@@ -5,9 +5,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from app.db.session import MODEL_REGISTRY,  get_engine
 from app.api.v1.router import api_router
+from app.api.v2.router import budgetRouter
 from app.core.config import settings, UPLOAD_DIR
 from contextlib import asynccontextmanager
 from loguru import logger
+
 # import ngrok
 
 # import model.users as users
@@ -65,10 +67,11 @@ async def init_db():
 async def Home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
-@app.on_event("shutdown")
-async def shutdown_db():
-    await engine.dispose()
+# @app.on_event("shutdown")
+# async def shutdown_db():
+#     await engine.dispose()
 
 app.include_router(api_router)
+app.include_router(budgetRouter, prefix="/we-budget", tags=["we-budget"])
 
 

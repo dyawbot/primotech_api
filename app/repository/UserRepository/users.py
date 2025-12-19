@@ -20,9 +20,9 @@ from app.utils.email_verification import send_verification_email
 
 
 
-SECRET_KEY = settings.secret_key
-ALGORITHM = settings.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+# SECRET_KEY = settings.secret_key
+# ALGORITHM = settings.algorithm
+# ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 async def get_users(db:AsyncSession, skip:int=0,limit:int=5):
@@ -82,7 +82,7 @@ async def create_user(db: Session, user: RequestUser):
    
     try:
         jwt_data = {"sub": _user.userId, "name" : _user.username, "email" : _user.email, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
         is_success = send_verification_email(toEmail=_user.email, token=access_token)
         if(is_success):
@@ -193,7 +193,7 @@ async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: st
             
         # else:
         jwt_data = {"sub": _user.userId, "name" : _user.username, "email" : _user.email, "create_at" : datetime.now().timestamp(), "role_type" : "admin"}
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
         return StatusHelper(code=200, status="OK", message="Success getting the user", token=access_token, result=_user)
            
@@ -209,16 +209,16 @@ async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: st
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.now() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.now() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
     expire = expire.timestamp()
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode,  SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode,  settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
 
 
 def verify_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         username: str = payload.get("sub")
         if username is None:
             return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= "Invalid token")

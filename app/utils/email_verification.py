@@ -5,7 +5,7 @@ from app.core.config import settings
 
 def send_verification_email(toEmail, token) -> bool:
     try:
-        verification_link =  f"{settings.API_URL}/me?id={token}"
+        verification_link =  f"{settings.email['url_dev']}/we-budget/email/me?id={token}"
         msg = EmailMessage()
         msg["Subject"] = "Verify Account"
         msg["From"] = "Primovative Team <noreply@primovative.com>" 
@@ -18,7 +18,7 @@ def send_verification_email(toEmail, token) -> bool:
         )
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(settings.ADMIN_EMAIL, settings.ADMIN_PASS)
+            smtp.login(settings.email["username"], settings.email["password"])
             smtp.send_message(msg)
         return True
     except Exception as e:
