@@ -56,16 +56,20 @@ class Config:
     def prod_url(self) -> str:
         return self._config.get("url", "http://api.primovative.com")
     
-
     @property
+    def get_keys(self) -> Dict[str, str]:
+        return self._config["keys"]
+    
     def secret_key(self) -> str:
-        return self._config.get("secret_key", "")         
-    @property
+        return self.get_keys["secret_key"]
+    
     def algorithm(self) -> str:
-        return self._config.get("algorithm", "HS256")
-    @property
+        return self.get_keys["algorithm"]
+    
     def access_token_expire_minutes(self) -> int:
-        return self._config.get("access_token_expire_minutes", 30)
+        return self.get_keys["access_token_expire_minutes"] 
+    
+
     
     def build_db_url(self, db_name: str,async_driver: bool = True) -> str:
         g = self.db_global

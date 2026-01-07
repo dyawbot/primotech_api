@@ -13,7 +13,7 @@ from app.schemas.UserSchemas.users import  RequestUser, Response
 from app.utils import image_compression
 from app.utils.image_rename import hash_file
 from app.utils.removed_characters import clean_string as cs
-from app.api.v1.authentications import authenticate_user as auth
+from app.api.authentications import authenticate_user as auth
 import os
 import hashlib
 

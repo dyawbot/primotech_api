@@ -16,7 +16,7 @@ security = HTTPBearer()
 def authenticate_user(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key(), algorithms=[settings.algorithm()])
         user_id = payload.get("sub")
         user_email = payload.get(("email"))
 

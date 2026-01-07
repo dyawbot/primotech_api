@@ -1,11 +1,13 @@
+
+from app.core.config import settings
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
 from typing import Optional
+from jose import JWTError, jwt
 from fastapi import status
 
 
-from app.core.config import settings
 from app.model.helper import StatusHelper
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -18,11 +20,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def verify_token(token: str):
     try:
-        print(type(token))
-        print(type(settings.secret_key()))
-        print(type(settings.algorithm()))
-        payload = jwt.decode(token, settings.secret_key(), algorithms=[settings.algorithm()])
-        username: str = payload.get("email")
+        payload = jwt.decode(token, settings.secret_key(), algorithms=[settings.algorithm() ])
+        username: str = payload.get("sub")
         if username is None:
             return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= "Invalid token")
         return str(username)

@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 def verify_token(token: str):
     try:
-        payload = jwt.decode(token, settings.secretKey, algorithms=[settings.algorithm])
+        payload = jwt.decode(token, settings.secret_key(), algorithms=[settings.algorithm()])
         email: str = payload.get("email")
         if email is None:
             return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= "Invalid token")

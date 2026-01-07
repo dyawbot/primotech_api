@@ -209,16 +209,16 @@ async def get_user_by_id(db:AsyncSession, user_id: int, password: str, token: st
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.now() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))
+    expire = datetime.now() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes()))
     expire = expire.timestamp()
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode,  settings.secret_key, algorithm=settings.algorithm)
+    encoded_jwt = jwt.encode(to_encode,  settings.secret_key(), algorithm=settings.algorithm())
     return encoded_jwt
 
 
 def verify_token(token: str):
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(token, settings.secret_key(), algorithms=[settings.algorithm()])
         username: str = payload.get("sub")
         if username is None:
             return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status= "Error", message= "Invalid token")

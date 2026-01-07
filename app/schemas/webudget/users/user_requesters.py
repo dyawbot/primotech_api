@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class LoginRequest(BaseModel):
-    username: str
-    password: str
+    username: Optional[str] =None
+    password: Optional[str] =None
     token: Optional[str] = None
+

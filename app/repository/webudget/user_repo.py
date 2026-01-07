@@ -9,12 +9,55 @@ from fastapi import status
 
 # from app.model.UserModels.users import Users
 from app.model.we_budget.users_models import Users
-from app.repository.webudget.helpers import create_access_token
+# from app.repository.authentications.tokens import verify_token
+from app.repository.webudget.helpers import create_access_token, verify_token
 from app.schemas.webudget.users.users_shema import UserRegistrationShema
 from app.model.helper import StatusHelper
 from app.utils import hash_password as hash
 from app.core.config import settings
 from app.utils.email_verification import send_verification_email
+
+
+async def user_login(db:AsyncSession, request):
+    try:
+        email = request.username
+
+        if request.token:
+            verified_email= verify_token(request.token)
+            email = verified_email
+            
+            if not isinstance(verified_email, str):
+                print(type(verified_email))
+                return verified_email
+        
+        stmt = select(Users).where(Users.email == email )
+        result = await db.execute(stmt) 
+        _user = result.scalar_one_or_none()
+
+        if _user is None:
+            return StatusHelper(code=status.HTTP_404_NOT_FOUND, status="Error", message="User not found")
+        if request.password is not None:
+            if(not _user.is_verified):
+                return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status="Unverified Email Address", message="Please verify your email address before logging in.")
+            if(not hash.verify_password(request.password, _user.password)):
+                return StatusHelper(code=status.HTTP_401_UNAUTHORIZED, status="Error", message="Wrong password")
+        
+        jwt_data = {"sub": str(_user.id), "name" : _user.name, "email" : _user.email, "create_at" : datetime.now().timestamp(), "role_type" : "webudget_user"}
+        access_token_expires = timedelta(minutes=settings.access_token_expire_minutes())
+        access_token = create_access_token(data=jwt_data, expires_delta=access_token_expires)
+        
+
+        expire = datetime.now() + (access_token_expires or timedelta(minutes=settings.access_token_expire_minutes()))
+        return StatusHelper(code=200, status="OK", message="Success getting the user", token=access_token, result= {
+            "exp": expire,
+            "access_token": access_token,
+        })
+
+    
+    except Exception as e:
+        print("Error during user login:", e)
+        return StatusHelper(code=status.HTTP_500_INTERNAL_SERVER_ERROR, status="Error", message="An unexpected error occurred during login")
+    
 async def user_registration(db:Session, user: UserRegistrationShema):
     try:
 
